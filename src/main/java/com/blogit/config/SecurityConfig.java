@@ -4,6 +4,7 @@ import com.blogit.filters.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,6 +40,11 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()  // Authentication routes
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Admin routes
                 .requestMatchers("/api/creator/**").hasRole("CREATOR")  // Creator routes
+                .requestMatchers("/api/blogs/**").permitAll()  // Allow all blog routes to be publicly accessible
+                .requestMatchers(HttpMethod.POST, "/api/blogs/**").authenticated()  // Authenticate create routes
+                .requestMatchers(HttpMethod.PUT, "/api/blogs/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.PATCH, "/api/blogs/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.DELETE, "/api/blogs/**").authenticated()  // Authenticate delete routes
                 .anyRequest().authenticated()  // All other routes require authentication
             )
             .httpBasic(Customizer.withDefaults())

@@ -1,13 +1,13 @@
 package com.blogit.services;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+//import java.security.NoSuchAlgorithmException;
+//import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import javax.crypto.KeyGenerator;
+//import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,17 +21,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-	private String secretkey = "";
-	
-	public JwtService() {
-		try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("HmacSHA256");
-            SecretKey sk = keyGen.generateKey();
-            secretkey = Base64.getEncoder().encodeToString(sk.getEncoded());
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private String secretkey = "rMfJ4WxlKxi0IqfH4F7TKex1LgX3bwF/krGhb1hf1I4=";
 	
 	public String generateToken(String username) {
         Map<String, Object> claims = new HashMap<>();
@@ -40,7 +30,7 @@ public class JwtService {
                 .add(claims)
                 .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 30))
+                .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
                 .and()
                 .signWith(getKey())
                 .compact();

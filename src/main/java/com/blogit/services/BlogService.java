@@ -10,9 +10,11 @@ public interface BlogService {
 	
 	Blog getBlogById(Long id);
 	
-	Blog saveBlog(Blog blog);
+	Blog createBlog(Blog blog, String token);
 	
-	Blog updateBlog(Blog blog);
+	Blog saveBlog(Blog blog, String token);
+	
+	Blog updateBlog(Long id, Blog blog);
 	
 	void deleteBlog(Long id);
 	

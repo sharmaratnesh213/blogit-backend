@@ -45,22 +45,24 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserByUsername(String username) {
-		return userRepository.findByUsername(username).orElse(null);
+		User user = userRepository.findByUsername(username);
+		return user;
 	}
 
 	@Override
 	public User getUserByEmail(String email) {
-		return userRepository.findByEmail(email).orElse(null);
+		User user = userRepository.findByEmail(email);
+		return user;
 	}
 
 	@Override
 	public User getUserByUsernameAndPassword(String username, String password) {
-		return userRepository.findByUsernameAndPassword(username, password).orElse(null);
+		return userRepository.findByUsernameAndPassword(username, password);
 	}
 
 	@Override
 	public User getUserByEmailAndPassword(String email, String password) {
-		return userRepository.findByEmailAndPassword(email, password).orElse(null);
+		return userRepository.findByEmailAndPassword(email, password);
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<User> verify(User user) {
         Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         if (authentication.isAuthenticated()) {
-        	User authenticatedUser = userRepository.findByEmail(user.getEmail()).orElse(null);
+        	User authenticatedUser = userRepository.findByEmail(user.getEmail());
         	authenticatedUser.setPassword(null);
 			String token = jwtService.generateToken(authenticatedUser.getEmail());
 			
