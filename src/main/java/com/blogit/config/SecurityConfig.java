@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()  // Authentication routes
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Admin routes
                 .requestMatchers("/api/creator/**").hasRole("CREATOR")  // Creator routes
+                .requestMatchers("/swagger-ui/**").permitAll()  // Allow Swagger UI
+                .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/api/blogs/**").permitAll()  // Allow all blog routes to be publicly accessible
                 .requestMatchers(HttpMethod.POST, "/api/blogs/**").authenticated()  // Authenticate create routes
                 .requestMatchers(HttpMethod.PUT, "/api/blogs/**").authenticated()  // Authenticate update routes
