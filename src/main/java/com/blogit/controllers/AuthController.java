@@ -2,6 +2,7 @@ package com.blogit.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,11 @@ public class AuthController {
 	@PostMapping("/register")
 	public User register(@RequestBody User user) {
 		return userService.registerUser(user);
+	}
+	
+	@GetMapping("/logout")
+	public ResponseEntity<String> logout() {
+		return userService.logout();
 	}
 	
 }

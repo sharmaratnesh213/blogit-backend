@@ -1,5 +1,7 @@
 package com.blogit.services.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.blogit.exceptions.OperationNotAllowedException;
 import com.blogit.models.User;
 import com.blogit.repositories.UserRepository;
 import com.blogit.services.JwtService;
@@ -27,6 +30,11 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	
 	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
+	
+	@Override
+	public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
 	@Override
 	public User getUserById(Long id) {
@@ -34,19 +42,49 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User updateUser(User user) {
-		return userRepository.save(user);
+	public User updateUser(Long id, User user, String token) {
+		String email = jwtService.extractUserName(token);
+		User authenticatedUser = userRepository.findByEmail(email);
+		
+		if (authenticatedUser.getId() != id) {
+			throw new OperationNotAllowedException("User", "id", user.getId().toString(), "Operation restricted to authenticated user.");
+		}
+		
+		if (user.getPassword() != null) {
+			authenticatedUser.setPassword(passwordEncoder.encode(user.getPassword()));
+		}
+		
+		if (user.getImageUrl() != null) {
+			authenticatedUser.setImageUrl(user.getImageUrl());
+		}
+		
+		if (user.getUsername() != null) {
+			authenticatedUser.setUsername(user.getUsername());
+		}
+		
+		if (user.getDob() != null) {
+			authenticatedUser.setDob(user.getDob());
+		}
+		
+		return userRepository.save(authenticatedUser);
 	}
 
 	@Override
-	public void deleteUser(Long id) {
+	public void deleteUser(Long id, String token) {
+		String email = jwtService.extractUserName(token);
+		User authenticatedUser = userRepository.findByEmail(email);
+		
+		if (authenticatedUser.getId() != id) {
+			throw new OperationNotAllowedException("User", "id", String.valueOf(id),
+					"Operation restricted to authenticated user.");
+		}
+		
 		userRepository.deleteById(id);
 	}
 
 	@Override
-	public User getUserByUsername(String username) {
-		User user = userRepository.findByUsername(username);
-		return user;
+	public List<User> getUserByUsername(String username) {
+		return userRepository.findByUsernameContainingIgnoreCase(username);
 	}
 
 	@Override
@@ -89,6 +127,15 @@ public class UserServiceImpl implements UserService {
         	return ResponseEntity.status(401).build();
         }
     }
+	
+	@Override
+	public ResponseEntity<String> logout() {
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "Bearer ");
+		return ResponseEntity.ok()
+				.headers(headers)
+				.body("Logged out successfully.");
+	}
 	
 	
 }

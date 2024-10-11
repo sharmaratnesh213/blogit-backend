@@ -14,14 +14,16 @@ public interface BlogService {
 	
 	Blog saveBlog(Blog blog, String token);
 	
-	Blog updateBlog(Long id, Blog blog);
+	Blog updateBlog(Long id, Blog blog, String token);
 	
-	void deleteBlog(Long id);
+	void deleteBlog(Long id, String token);
 	
 	List<Blog> getBlogsByUserId(Long userId);
 	
 	List<Blog> getBlogsByCategoryId(Long categoryId);
 	
 	List<Blog> getBlogsByTitle(String title);
+	
+	List<Blog> getBlogsByCategoryName(String categoryName);
 	
 }

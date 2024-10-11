@@ -38,15 +38,26 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                 .requestMatchers("/api/public/**").permitAll()  // Public routes
                 .requestMatchers("/api/auth/**").permitAll()  // Authentication routes
+                .requestMatchers("api/auth/logout").authenticated()  // Logout route
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")  // Admin routes
                 .requestMatchers("/api/creator/**").hasRole("CREATOR")  // Creator routes
                 .requestMatchers("/swagger-ui/**").permitAll()  // Allow Swagger UI
-                .requestMatchers("/v3/api-docs/**").permitAll()
+                .requestMatchers("/v3/api-docs/**").permitAll()  //Allow Swagger UI
                 .requestMatchers("/api/blogs/**").permitAll()  // Allow all blog routes to be publicly accessible
                 .requestMatchers(HttpMethod.POST, "/api/blogs/**").authenticated()  // Authenticate create routes
                 .requestMatchers(HttpMethod.PUT, "/api/blogs/**").authenticated()  // Authenticate update routes
                 .requestMatchers(HttpMethod.PATCH, "/api/blogs/**").authenticated()  // Authenticate update routes
                 .requestMatchers(HttpMethod.DELETE, "/api/blogs/**").authenticated()  // Authenticate delete routes
+                .requestMatchers("/api/categories/**").permitAll()  // Allow all category routes to be publicly accessible
+                .requestMatchers(HttpMethod.POST, "/api/categories/**").authenticated()  // Authenticate create routes
+                .requestMatchers(HttpMethod.PUT, "/api/categories/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.PATCH, "/api/categories/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.DELETE, "/api/categories/**").authenticated()  // Authenticate delete routes
+                .requestMatchers("/api/users/**").permitAll()  // Allow all user routes to be publicly accessible
+                .requestMatchers(HttpMethod.POST, "/api/users/**").authenticated()  // Authenticate create routes
+                .requestMatchers(HttpMethod.PUT, "/api/users/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.PATCH, "/api/users/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.DELETE, "/api/users/**").authenticated()  // Authenticate delete routes
                 .anyRequest().authenticated()  // All other routes require authentication
             )
             .httpBasic(Customizer.withDefaults())

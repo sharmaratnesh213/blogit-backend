@@ -1,18 +1,22 @@
 package com.blogit.services;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 
 import com.blogit.models.User;
 
 public interface UserService {
+	
+	List<User> getAllUsers();
 
 	User getUserById(Long id);
 	
-	User updateUser(User user);
+	User updateUser(Long id, User user, String token);
 	
-	void deleteUser(Long id);
+	void deleteUser(Long id, String token);
 	
-	User getUserByUsername(String username);
+	List<User> getUserByUsername(String username);
 	
 	User getUserByEmail(String email);
 	
@@ -23,5 +27,7 @@ public interface UserService {
 	User registerUser(User user);
 	
 	ResponseEntity<User> verify(User user);
+	
+	ResponseEntity<String> logout();
 	
 }

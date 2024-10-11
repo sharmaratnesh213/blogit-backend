@@ -46,9 +46,34 @@ public class BlogController {
 		return new ResponseEntity<>(blog, HttpStatus.OK);
     }
 	
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<List<Blog>> getBlogsByUserId(@PathVariable Long userId) {
+		List<Blog> blogs = blogService.getBlogsByUserId(userId);
+		return new ResponseEntity<>(blogs, HttpStatus.OK);
+	}
+	
+	@GetMapping("/category/{categoryId}")
+	public ResponseEntity<List<Blog>> getBlogsByCategoryId(@PathVariable Long categoryId) {
+		List<Blog> blogs = blogService.getBlogsByCategoryId(categoryId);
+		return new ResponseEntity<>(blogs, HttpStatus.OK);
+	}
+	
+	@GetMapping("/title/{title}")
+	public ResponseEntity<List<Blog>> getBlogsByTitle(@PathVariable String title) {
+        List<Blog> blogs = blogService.getBlogsByTitle(title);
+        return new ResponseEntity<>(blogs, HttpStatus.OK);
+    }
+	
+	@GetMapping("/categoryName/{categoryName}")
+	public ResponseEntity<List<Blog>> getBlogsByCategoryName(@PathVariable String categoryName) {
+        List<Blog> blogs = blogService.getBlogsByCategoryName(categoryName);
+        return new ResponseEntity<>(blogs, HttpStatus.OK);
+    }
+	
 	@PutMapping("/{id}/update")
-	public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody Blog blog) {
-		Blog updatedBlog = blogService.updateBlog(id, blog);
+	public ResponseEntity<Blog> updateBlog(@PathVariable Long id, @RequestBody Blog blog, @RequestHeader("Authorization") String token) {
+		String jwtToken = token.substring(7);
+		Blog updatedBlog = blogService.updateBlog(id, blog, jwtToken);
 		if (updatedBlog == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -56,9 +81,10 @@ public class BlogController {
 	}
 	
 	@DeleteMapping("/{id}/delete")
-	public ResponseEntity<HttpStatus> deleteBlog(@PathVariable Long id) {
-		blogService.deleteBlog(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<String> deleteBlog(@PathVariable Long id, @RequestHeader("Authorization") String token) {
+		String jwtToken = token.substring(7);
+		blogService.deleteBlog(id, jwtToken);
+		return new ResponseEntity<>("Blog deleted successfully.", HttpStatus.OK);
 	}
 	
 }

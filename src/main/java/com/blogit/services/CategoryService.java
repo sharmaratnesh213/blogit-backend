@@ -1,7 +1,8 @@
 package com.blogit.services;
 
 import java.util.List;
-import java.util.Locale.Category;
+
+import com.blogit.models.Category;
 
 public interface CategoryService {
 
@@ -9,11 +10,11 @@ public interface CategoryService {
 	
 	Category getCategoryById(Long id);
 	
-	Category saveCategory(Category category);
+	Category createCategory(Category category, String token);
 	
-	Category updateCategory(Category category);
+	Category updateCategory(Long id, Category category, String token);
 	
-	void deleteCategory(Long id);
+	void deleteCategory(Long id, String token);
 	
 	Category getCategoryByName(String name);
 	

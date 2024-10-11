@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.blogit.exceptions.OperationNotAllowedException;
+import com.blogit.exceptions.ResourceNotFoundException;
 import com.blogit.models.Blog;
 import com.blogit.models.Category;
 import com.blogit.models.User;
@@ -69,7 +71,18 @@ public class BlogServiceImpl implements BlogService {
 	}
 	
 	@Override
-	public Blog updateBlog(Long id, Blog blog) {
+	public Blog updateBlog(Long id, Blog blog, String token) {
+		String email = jwtService.extractUserName(token);
+		User user = userRepository.findByEmail(email);
+		
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found with email: " + email);
+		}
+		
+		if (blog.getUser() == null || !blog.getUser().getEmail().equals(email)) {
+			throw new OperationNotAllowedException("Blog", "user.email", email, "User not allowed to update the blog.");
+		}
+		
 		Optional<Blog> existingBlog = blogRepository.findById(id);
 		if (existingBlog.isPresent()) {
 			Blog updatedBlog = existingBlog.get();
@@ -84,12 +97,26 @@ public class BlogServiceImpl implements BlogService {
 			}
 			return blogRepository.save(updatedBlog);
 		} else {
-			return null;
+			throw new ResourceNotFoundException("Blog", "id", id);
 		}
 	}
 	
 	@Override
-	public void deleteBlog(Long id) {
+	public void deleteBlog(Long id, String token) {
+		String email = jwtService.extractUserName(token);
+		User user = userRepository.findByEmail(email);
+		
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found with email: " + email);
+		}
+		
+		Optional<Blog> blog = blogRepository.findById(id);
+		if (!blog.isPresent()) {
+			throw new ResourceNotFoundException("Blog", "id", id);
+		}
+		if (blog.get().getUser() == null || !blog.get().getUser().getEmail().equals(email)) {
+			throw new OperationNotAllowedException("Blog", "user.email", email, "User not allowed to delete the blog.");
+		}
 		blogRepository.deleteById(id);
 	}
 	
@@ -105,7 +132,12 @@ public class BlogServiceImpl implements BlogService {
 	
 	@Override
 	public List<Blog> getBlogsByTitle(String title) {
-		return blogRepository.findByTitle(title);
+		return blogRepository.findByTitleContainingIgnoreCase(title);
+	}
+	
+	@Override
+	public List<Blog> getBlogsByCategoryName(String categoryName) {
+		return blogRepository.findByCategory_NameContainingIgnoreCase(categoryName);
 	}
 	
 }

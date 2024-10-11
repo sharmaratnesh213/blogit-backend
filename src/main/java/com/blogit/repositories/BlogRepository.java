@@ -13,5 +13,9 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 	List<Blog> findByCategoryId(Long categoryId);
 
 	List<Blog> findByTitle(String title);
+	
+	List<Blog> findByTitleContainingIgnoreCase(String title);
+	
+	List<Blog> findByCategory_NameContainingIgnoreCase(String categoryName);
 
 }
