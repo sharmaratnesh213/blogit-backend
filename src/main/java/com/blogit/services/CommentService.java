@@ -8,11 +8,11 @@ public interface CommentService {
 
 	Comment getCommentById(Long id);
 
-	Comment saveComment(Comment comment, Long blogId, Long userId);
+	Comment addComment(Comment comment, String token);
 
-	Comment updateComment(Comment comment, Long blogId, Long userId);
+	Comment updateComment(Long id, Comment comment, String token);
 
-	void deleteComment(Long id);
+	void deleteComment(Long id, String token);
 
 	List<Comment> getCommentsByBlogId(Long blogId);
 

@@ -2,6 +2,9 @@ package com.blogit.models;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +27,7 @@ public class Comment {
 	
 	@ManyToOne
 	@JoinColumn(name = "blog_id")
+	@JsonBackReference
 	private Blog blog;
 	
 	@ManyToOne
@@ -84,6 +88,9 @@ public class Comment {
 		this.updateDateTime = updateDateTime;
 	}
 	
-	
+	@JsonProperty("blogId")
+	public Long getBlogField() {
+		return blog.getId();
+	}
 	
 }

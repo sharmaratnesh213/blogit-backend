@@ -58,6 +58,14 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/users/**").authenticated()  // Authenticate update routes
                 .requestMatchers(HttpMethod.PATCH, "/api/users/**").authenticated()  // Authenticate update routes
                 .requestMatchers(HttpMethod.DELETE, "/api/users/**").authenticated()  // Authenticate delete routes
+                .requestMatchers("/api/comments/**").permitAll()  // Allow all comment routes to be publicly accessible
+                .requestMatchers(HttpMethod.POST, "/api/comments/**").authenticated()  // Authenticate create routes
+                .requestMatchers(HttpMethod.PUT, "/api/comments/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.PATCH, "/api/comments/**").authenticated()  // Authenticate update routes
+                .requestMatchers(HttpMethod.DELETE, "/api/comments/**").authenticated()  // Authenticate delete routes
+                .requestMatchers("/api/likes/**").permitAll()  // Allow all like routes to be publicly accessible")
+                .requestMatchers(HttpMethod.POST, "/api/likes/**").authenticated()  // Authenticate create routes
+                .requestMatchers(HttpMethod.DELETE, "/api/likes/**").authenticated()  // Authenticate delete routes
                 .anyRequest().authenticated()  // All other routes require authentication
             )
             .httpBasic(Customizer.withDefaults())
