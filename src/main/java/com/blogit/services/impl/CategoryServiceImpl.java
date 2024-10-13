@@ -98,7 +98,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category getCategoryByName(String name) {
+	public List<Category> getCategoryByName(String name) {
 		return categoryRepository.findByNameContainingIgnoreCase(name);
 	}
 }

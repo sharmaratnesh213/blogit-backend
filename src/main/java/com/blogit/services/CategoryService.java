@@ -16,6 +16,6 @@ public interface CategoryService {
 	
 	void deleteCategory(Long id, String token);
 	
-	Category getCategoryByName(String name);
+	List<Category> getCategoryByName(String name);
 	
 }

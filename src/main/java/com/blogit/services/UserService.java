@@ -28,6 +28,8 @@ public interface UserService {
 	
 	ResponseEntity<User> verify(User user);
 	
+	ResponseEntity<Boolean> verifyToken(String token);
+	
 	ResponseEntity<String> logout();
 	
 }
