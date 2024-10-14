@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 //import org.springframework.security.core.context.SecurityContextHolder;
 //import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -139,5 +140,21 @@ public class BlogServiceImpl implements BlogService {
 	public List<Blog> getBlogsByCategoryName(String categoryName) {
 		return blogRepository.findByCategory_NameContainingIgnoreCase(categoryName);
 	}
+	
+	@Override
+	public List<Blog> getBlogsByQuery(String query) {
+		return blogRepository.findAll(getBlogSpecification(query));
+	}
+	
+	private Specification<Blog> getBlogSpecification(String query) {
+        return (root, criteriaQuery, criteriaBuilder) -> {
+            String queryLike = "%" + query.toLowerCase() + "%";
+            return criteriaBuilder.or(
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), queryLike),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("category").get("name")), queryLike),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("username")), queryLike)
+            );
+        };
+    }
 	
 }

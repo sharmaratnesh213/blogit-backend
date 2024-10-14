@@ -26,4 +26,6 @@ public interface BlogService {
 	
 	List<Blog> getBlogsByCategoryName(String categoryName);
 	
+	List<Blog> getBlogsByQuery(String query);
+	
 }

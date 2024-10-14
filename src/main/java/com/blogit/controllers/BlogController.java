@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blogit.models.Blog;
@@ -92,6 +93,12 @@ public class BlogController {
 		String jwtToken = token.substring(7);
 		blogService.deleteBlog(id, jwtToken);
 		return new ResponseEntity<>("Blog deleted successfully.", HttpStatus.OK);
+	}
+	
+	@GetMapping("/search")
+	public ResponseEntity<List<Blog>> getBlogsByQuery(@RequestParam String query) {
+		List<Blog> blogs = blogService.getBlogsByQuery(query);
+		return new ResponseEntity<>(blogs, HttpStatus.OK);
 	}
 	
 }
