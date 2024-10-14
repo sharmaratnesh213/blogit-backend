@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import com.blogit.exceptions.OperationNotAllowedException;
 import com.blogit.models.User;
 import com.blogit.repositories.UserRepository;
 import com.blogit.services.JwtService;
-import com.blogit.services.MyUserDetailsService;
 import com.blogit.services.UserService;
 
 
@@ -31,9 +29,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private MyUserDetailsService userDetailsService;
 	
 	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 	
@@ -137,12 +132,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResponseEntity<Boolean> verifyToken(String token) {
 		String email = jwtService.extractUserName(token);
-		UserDetails user = userDetailsService.loadUserByUsername(email);
+		User user = userRepository.findByEmail(email);
 		
-		if (jwtService.validateToken(token, user)) {
-			return ResponseEntity.ok(true);
-		} else {
+		if (user == null) {
 			return ResponseEntity.ok(false);
+		}
+		
+		if (jwtService.isTokenExpired(token)) {
+			return ResponseEntity.ok(false);
+		} else {
+			return ResponseEntity.ok(true);
 		}
 	}
 	
