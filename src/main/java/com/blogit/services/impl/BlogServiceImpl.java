@@ -79,13 +79,13 @@ public class BlogServiceImpl implements BlogService {
 			throw new UsernameNotFoundException("User not found with email: " + email);
 		}
 		
-		if (blog.getUser() == null || !blog.getUser().getEmail().equals(email)) {
-			throw new OperationNotAllowedException("Blog", "user.email", email, "User not allowed to update the blog.");
-		}
-		
 		Optional<Blog> existingBlog = blogRepository.findById(id);
 		if (existingBlog.isPresent()) {
 			Blog updatedBlog = existingBlog.get();
+			if (updatedBlog.getUser() == null || !updatedBlog.getUser().getEmail().equals(email)) {
+				throw new OperationNotAllowedException("Blog", "user.email", email, "User not allowed to update the blog.");
+			}
+			
 			if (blog.getTitle() != null) {
 				updatedBlog.setTitle(blog.getTitle());
 			}
